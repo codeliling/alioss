@@ -4,6 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+<link type="text/css" rel="stylesheet" href="resources/css/jquery/themes/humanity/jquery-ui.css" />
 </head>
 <body>
 	<h4>您所选择的文件列表：</h4>
@@ -16,13 +17,20 @@
 	</div>
 
 	<pre id="console"></pre>
-
+	<div id="progressbar" style="width: 100px; height: 5px;"></div>
 	<p>&nbsp;</p>
 </body>
 
 <script type="text/javascript" src="resources/js/lib/jquery-1.10.2.min.js" charset="UTF-8"></script>
+<script type="text/javascript" src="resources/js/lib/jquery/jquery-ui.js" charset="UTF-8"></script>
 <script type="text/javascript" src="resources/js/lib/plupload-2.3.1/plupload.full.min.js" charset="UTF-8"></script>
 <script type="text/javascript">
+	$(function() {
+		$("#progressbar").progressbar({
+			value : 5
+		});
+	});
+
 	var accessid = '';
 	var accesskey = '';
 	var host = '';
@@ -34,6 +42,8 @@
 	var expire = 0;
 	var g_object_name = '';
 	var now = timestamp = Date.parse(new Date()) / 1000;
+
+	var progressbar = $("#progressbar");
 
 	function send_request() {
 		var xmlhttp = null;
@@ -92,10 +102,10 @@
 	}
 
 	function calculate_object_name(filename) {
-		
-			suffix = get_suffix(filename)
-			g_object_name = key + random_string(10) + suffix
-		
+
+		suffix = get_suffix(filename)
+		g_object_name = key + random_string(10) + suffix
+
 	}
 
 	function get_uploaded_object_name(filename) {
@@ -182,7 +192,9 @@
 					},
 
 					UploadProgress : function(up, file) {
+						progressbar.progressbar("value", file.percent);
 						var d = document.getElementById(file.id);
+
 						d.getElementsByTagName('b')[0].innerHTML = '<span>'
 								+ file.percent + "%</span>";
 						var prog = d.getElementsByTagName('div')[0];
